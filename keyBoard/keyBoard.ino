@@ -11,11 +11,25 @@ void setup() {
   }
   pinMode(scanOut[0], OUTPUT);
   pinMode(scanOut[1], OUTPUT);
+  pinMode(26, OUTPUT);
   analogWriteResolution(12);
   analogReadResolution(12);
 }
 
 void loop() {
+
+   
+  while(true) //testing digital pins. why won't they work????
+  {
+    digitalWrite(26, LOW);
+    delay(100);
+    digitalWrite(26, HIGH);
+    delay(100);
+//   while(key[8] == HIGH)
+//   {
+//    playKey(221);
+//   }
+  }
   
   //go through our array of buttons
  digitalWrite(scanOut[0], HIGH);
@@ -37,11 +51,11 @@ void loop() {
  }
  digitalWrite(scanOut[0], LOW);
  digitalWrite(scanOut[1], HIGH);
- for(i = 0; i < 5; i++)
+ for(int j = 0; j < 5; j++)
  {
-   while(key[i] == HIGH)
+   while(key[j] == HIGH)
    {
-    playKey(i+8);
+    playKey(j+8);
    }
  }
  
@@ -51,7 +65,6 @@ void loop() {
 void playKey(float delayTime){
   int j = 0;
   for(int i=0; i<271; i++) { //
-  //  bufferFill(bassTable);
     analogWrite(DAC1, bassTable[i]);//sin table
     delayMicroseconds(delayTime); //determines the frequency of the sine wav
     i+=3;
