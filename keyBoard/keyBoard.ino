@@ -1,4 +1,5 @@
 #include "waves.h"
+#include "lfo.h"
 
 //int key[] = {30, 32, 34, 36, 38, 40, 42, 44, 46};
 int key[] = {30, 44, 42, 40, 38, 36, 34, 32, 46};
@@ -30,11 +31,11 @@ void loop() {
    {
       if(i == 8)
       {
-        playKey(0); //special case where the wires don't match
+        playKey(0, i); //special case where the wires don't match
       }
       else
       {
-        playKey(i);
+        playKey(i, i);
       }
    }
  }
@@ -46,19 +47,27 @@ void loop() {
  {
    while(digitalRead(key[j]) == LOW)
    {
-    playKey(j+8);
+    playKey(j+8, j);
    }
   
  }
 }//end loop
 
 
-void playKey(int keyNum){
-  int j = 0;
-  for(int i=0; i<271; i++) { //
-    analogWrite(DAC1, bassTable[i]);//sin table
-    delayMicroseconds(freq[keyNum]); //determines the frequency of the sine wav
-    i+=3;
+void playKey(int freqNum, int keyNum){
+  int k = 1;
+  for (int j = 0; j< 499; j++){ 
+
+    for(int i=0; i<271; i++) { //
+      analogWrite(DAC1, (int)(lfo[j]*bassTable[i]));//sin table
+      delayMicroseconds(freq[freqNum]); //determines the frequency of the sine wav
+      i+=3;
+    }
+    if(digitalRead(key[keyNum]) != LOW) //don't continue note while key is not pressed
+    {
+      break;
+    }
+    j+=10;
   }
 }
 
