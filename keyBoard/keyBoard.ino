@@ -14,6 +14,9 @@ boolean tremOn = false;
 int octaver = 51;
 boolean octaveDown = false;
 
+int tremRate = 10;
+int tremRateBtn = 47;
+
 void setup() {
   Serial.begin(9600);
   for(int i = 0; i <9; i++)
@@ -24,7 +27,9 @@ void setup() {
   analogReadResolution(12);
   attachInterrupt(digitalPinToInterrupt(tremolo), tremoloISR, RISING);
   attachInterrupt(digitalPinToInterrupt(octaver), octaveISR, RISING);
-}
+  attachInterrupt(digitalPinToInterrupt(tremRateBtn), tremRateISR, RISING);
+
+}//end setup
 
 void loop() {
  
@@ -90,18 +95,29 @@ void playKey(int freqNum, int keyNum){
     {
       break;
     }
-    if(octaveDown){
-      j = j + (freq2[freqNum] / 10);
-    }
-    else{
-      j = j + (freq[freqNum] / 10);
+    if(tremOn){
+      if(octaveDown){
+        j = j + (freq2[freqNum] / tremRate);
+      }
+      else{
+        j = j + (freq[freqNum] / tremRate);
+      }
     }
   }
-}
+}//end playKey
 
 void tremoloISR()
 {
   tremOn = !tremOn;
+}
+
+void tremRateISR()
+{
+  tremRate += 4;
+  if(tremRate > 20)
+  {
+    tremRate = 2;
+  }
 }
 
 void octaveISR()
